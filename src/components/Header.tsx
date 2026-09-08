@@ -1,189 +1,441 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import AppLogo from '@/components/ui/AppLogo';
 
-const navLinks = [
-  { label: 'Home', href: '/' },
-  { label: 'Properties', href: '/properties' },
-  { label: 'Services', href: '#services' },
-  { label: 'Why Choose Us', href: '#why-us' },
-  { label: 'Testimonials', href: '#testimonials' },
-  { label: 'About', href: '#about' },
-  { label: 'Contact', href: '#contact' },
+import {
+  Menu,
+  X,
+  Phone,
+  MessageCircle,
+  ArrowUpRight,
+} from 'lucide-react';
+import Image from 'next/image';
+const navItems = [
+  {
+    label: 'Home',
+    href: '/',
+  },
+  {
+    label: 'Properties',
+    href: '/properties',
+  },
+  {
+    label: 'Services',
+    href: '#services',
+  },
+  {
+    label: 'Why Us',
+    href: '#why-us',
+  },
+  {
+    label: 'About',
+    href: '#about',
+  },
+  {
+    label: 'Contact',
+    href: '#contact',
+  },
 ];
 
 export default function Header() {
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener('scroll', handleScroll, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   useEffect(() => {
-    if (menuOpen) document.body.style.overflow = 'hidden';
-    else document.body.style.overflow = '';
-    return () => { document.body.style.overflow = ''; };
-  }, [menuOpen]);
+    document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMenuOpen]);
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
 
   return (
     <>
+      {/* =====================================================
+          DESKTOP / MAIN HEADER
+      ====================================================== */}
+
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
-            ? 'bg-card/95 backdrop-blur-xl shadow-lg shadow-foreground/5 border-b border-border'
-            : 'bg-transparent'
-        }`}
+        className={`
+          sticky
+          top-0
+          z-50
+          w-full
+          border-b
+          transition-all
+          duration-300
+          ${
+            isScrolled
+              ? 'border-[#E5E7EB] bg-white/95 shadow-[0_4px_20px_rgba(17,24,39,0.06)] backdrop-blur-md'
+              : 'border-[#E5E7EB] bg-white'
+          }
+        `}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 lg:h-20">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 group">
-              <AppLogo size={40} />
-              <div className="hidden sm:block">
-                <span
-                  className={`font-bold text-base leading-tight block transition-colors duration-300 ${
-                    scrolled ? 'text-foreground' : 'text-white'
-                  }`}
-                >
-                  Jitendra Roy
-                </span>
-                <span
-                  className={`text-xs font-medium tracking-wide transition-colors duration-300 ${
-                    scrolled ? 'text-muted-foreground' : 'text-white/70'
-                  }`}
-                >
-                  Land Brokers
-                </span>
-              </div>
-            </Link>
+        <div
+          className="
+            mx-auto
+            flex
+            h-[72px]
+            max-w-[1240px]
+            items-center
+            justify-between
+            px-5
+            sm:px-8
+            lg:px-6
+          "
+        >
 
-            {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-1">
-              {navLinks?.map((link) => (
-                link?.href?.startsWith('#') ? (
-                  <a
-                    key={link?.label}
-                    href={link?.href}
-                    className={`px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-primary/10 hover:text-primary ${
-                      scrolled ? 'text-foreground/80' : 'text-white/85 hover:text-white'
-                    }`}
-                  >
-                    {link?.label}
-                  </a>
-                ) : (
-                  <Link
-                    key={link?.label}
-                    href={link?.href}
-                    className={`px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-primary/10 hover:text-primary ${
-                      scrolled ? 'text-foreground/80' : 'text-white/85 hover:text-white'
-                    }`}
-                  >
-                    {link?.label}
-                  </Link>
-                )
-              ))}
-            </nav>
+          {/* =================================================
+              LOGO
+          ================================================== */}
 
-            {/* CTA */}
-            <div className="hidden lg:flex items-center gap-3">
-              <a
-                href="tel:+918462097970"
-                className={`flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full border transition-all duration-200 ${
-                  scrolled
-                    ? 'border-primary text-primary hover:bg-primary hover:text-white' :'border-white/60 text-white hover:bg-white/15'
-                }`}
+        {/* =================================================
+    LOGO
+================================================== */}
+
+<Link
+  href="/"
+  onClick={closeMenu}
+  className="group flex shrink-0 items-center"
+  aria-label="Jitendra Roy Land Brokers"
+>
+  <Image
+    src="/assets/images/logo.png"
+    alt="Jitendra Roy Land Brokers"
+    width={190}
+    height={70}
+    priority
+    className="
+      h-auto
+      w-[155px]
+      object-contain
+      sm:w-[125px]
+      lg:w-[115px]
+    "
+  />
+</Link>
+
+          {/* =================================================
+              DESKTOP NAVIGATION
+          ================================================== */}
+
+          <nav
+            className="
+              hidden
+              items-center
+              gap-6
+              lg:flex
+              xl:gap-7
+            "
+            aria-label="Main navigation"
+          >
+            {navItems.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className="
+                  group
+                  relative
+                  py-2
+                  text-[12px]
+                  font-medium
+                  text-[#4B5563]
+                  transition-colors
+                  duration-200
+                  hover:text-[#064E3B]
+                "
               >
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping-slow absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                </span>
-                +91 84620 97970
-              </a>
-              <a
-                href="https://wa.me/918462097970"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary text-sm"
-              >
-                WhatsApp Us
-              </a>
-            </div>
+                {item.label}
 
-            {/* Mobile Menu Toggle */}
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className={`lg:hidden p-2 rounded-lg transition-colors ${
-                scrolled ? 'text-foreground' : 'text-white'
-              }`}
-              aria-label="Toggle menu"
-            >
-              {menuOpen ? (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              )}
-            </button>
-          </div>
-        </div>
-      </header>
-      {/* Mobile Menu */}
-      <div
-        className={`fixed inset-0 z-40 bg-foreground/95 backdrop-blur-xl transition-all duration-300 lg:hidden ${
-          menuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
-        }`}
-      >
-        <div className="flex flex-col h-full pt-20 pb-8 px-6">
-          <nav className="flex-1 space-y-1">
-            {navLinks?.map((link) => (
-              link?.href?.startsWith('#') ? (
-                <a
-                  key={link?.label}
-                  href={link?.href}
-                  onClick={() => setMenuOpen(false)}
-                  className="block py-3 text-xl font-medium text-white/80 hover:text-white transition-colors border-b border-white/10"
-                >
-                  {link?.label}
-                </a>
-              ) : (
-                <Link
-                  key={link?.label}
-                  href={link?.href}
-                  onClick={() => setMenuOpen(false)}
-                  className="block py-3 text-xl font-medium text-white/80 hover:text-white transition-colors border-b border-white/10"
-                >
-                  {link?.label}
-                </Link>
-              )
+                <span
+                  className="
+                    absolute
+                    bottom-0
+                    left-0
+                    h-px
+                    w-0
+                    bg-[#C59B27]
+                    transition-all
+                    duration-200
+                    group-hover:w-full
+                  "
+                />
+              </Link>
             ))}
           </nav>
-          <div className="flex flex-col gap-3 pt-6 border-t border-white/10">
+
+          {/* =================================================
+              DESKTOP ACTIONS
+          ================================================== */}
+
+          <div className="hidden items-center gap-2 lg:flex">
+
+            {/* Phone */}
             <a
               href="tel:+918462097970"
-              className="btn-outline-white text-center text-base"
-              onClick={() => setMenuOpen(false)}
+              className="
+                inline-flex
+                items-center
+                gap-1.5
+                rounded-[7px]
+                border
+                border-[#E5E7EB]
+                bg-white
+                px-3
+                py-2.5
+                text-[11px]
+                font-semibold
+                text-[#374151]
+                transition-colors
+                hover:border-[#064E3B]/25
+                hover:text-[#064E3B]
+              "
             >
-              📞 Call: +91 84620 97970
+              <Phone
+                size={13}
+                strokeWidth={1.8}
+                className="text-[#0F766E]"
+              />
+
+              Call
             </a>
+
+            {/* WhatsApp */}
             <a
-              href="https://wa.me/918462097970"
+              href="https://wa.me/918462097970?text=Hello%20Jitendra%20Roy%20Land%20Brokers%2C%20I%20am%20interested%20in%20your%20properties."
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-gold text-center text-base"
-              onClick={() => setMenuOpen(false)}
+              className="
+                inline-flex
+                items-center
+                gap-1.5
+                rounded-[7px]
+                bg-[#064E3B]
+                px-3.5
+                py-2.5
+                text-[11px]
+                font-semibold
+                text-white
+                transition-colors
+                hover:bg-[#053F30]
+              "
             >
-              💬 WhatsApp Us
+              <MessageCircle
+                size={14}
+                strokeWidth={1.8}
+              />
+
+              WhatsApp
+            </a>
+
+          </div>
+
+          {/* =================================================
+              MOBILE MENU BUTTON
+          ================================================== */}
+
+          <button
+            type="button"
+            onClick={() => setIsMenuOpen((prev) => !prev)}
+            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isMenuOpen}
+            className="
+              flex
+              h-9
+              w-9
+              items-center
+              justify-center
+              rounded-[7px]
+              border
+              border-[#E5E7EB]
+              text-[#374151]
+              transition-colors
+              hover:bg-[#F4F6F4]
+              lg:hidden
+            "
+          >
+            {isMenuOpen ? (
+              <X size={19} strokeWidth={1.8} />
+            ) : (
+              <Menu size={19} strokeWidth={1.8} />
+            )}
+          </button>
+
+        </div>
+      </header>
+
+      {/* =====================================================
+          MOBILE OVERLAY
+      ====================================================== */}
+
+      <div
+        className={`
+          fixed
+          inset-0
+          z-40
+          bg-[#022C22]/20
+          transition-opacity
+          duration-300
+          lg:hidden
+          ${
+            isMenuOpen
+              ? 'pointer-events-auto opacity-100'
+              : 'pointer-events-none opacity-0'
+          }
+        `}
+        onClick={closeMenu}
+        aria-hidden="true"
+      />
+
+      {/* =====================================================
+          MOBILE MENU
+      ====================================================== */}
+
+      <div
+        className={`
+          fixed
+          left-0
+          right-0
+          top-[72px]
+          z-40
+          border-b
+          border-[#E5E7EB]
+          bg-white
+          shadow-[0_15px_35px_rgba(17,24,39,0.08)]
+          transition-all
+          duration-300
+          lg:hidden
+          ${
+            isMenuOpen
+              ? 'translate-y-0 opacity-100'
+              : 'pointer-events-none -translate-y-3 opacity-0'
+          }
+        `}
+      >
+        <nav
+          className="
+            mx-auto
+            max-w-[1240px]
+            px-5
+            py-3
+            sm:px-8
+          "
+          aria-label="Mobile navigation"
+        >
+          <div className="divide-y divide-[#F0F1F2]">
+
+            {navItems.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                onClick={closeMenu}
+                className="
+                  flex
+                  items-center
+                  justify-between
+                  py-4
+                  text-sm
+                  font-medium
+                  text-[#374151]
+                  transition-colors
+                  hover:text-[#064E3B]
+                "
+              >
+                <span>{item.label}</span>
+
+                <ArrowUpRight
+                  size={15}
+                  strokeWidth={1.6}
+                  className="text-[#9CA3AF]"
+                />
+              </Link>
+            ))}
+
+          </div>
+
+          {/* Mobile actions */}
+          <div
+            className="
+              grid
+              grid-cols-2
+              gap-2
+              border-t
+              border-[#E5E7EB]
+              pt-4
+            "
+          >
+            <a
+              href="tel:+918462097970"
+              className="
+                flex
+                items-center
+                justify-center
+                gap-2
+                rounded-[7px]
+                border
+                border-[#D1D5DB]
+                px-4
+                py-3
+                text-xs
+                font-semibold
+                text-[#374151]
+              "
+            >
+              <Phone
+                size={15}
+                strokeWidth={1.8}
+              />
+
+              Call Us
+            </a>
+
+            <a
+              href="https://wa.me/918462097970?text=Hello%20Jitendra%20Roy%20Land%20Brokers%2C%20I%20am%20interested%20in%20your%20properties."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="
+                flex
+                items-center
+                justify-center
+                gap-2
+                rounded-[7px]
+                bg-[#064E3B]
+                px-4
+                py-3
+                text-xs
+                font-semibold
+                text-white
+              "
+            >
+              <MessageCircle
+                size={15}
+                strokeWidth={1.8}
+              />
+
+              WhatsApp
             </a>
           </div>
-        </div>
+
+        </nav>
       </div>
     </>
   );

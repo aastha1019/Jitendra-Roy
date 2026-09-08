@@ -1,71 +1,87 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
+import {
+  ArrowUpRight,
+  BadgeCheck,
+  Banknote,
+  Building2,
+  CheckCircle2,
+  FileCheck2,
+  FileText,
+  Handshake,
+  MapPinned,
+  Scale,
+  SearchCheck,
+  ShieldCheck,
+  TrendingUp,
+  Users,
+} from 'lucide-react';
 
 const features = [
   {
-    icon: '⚖️',
-    title: '100% Legal Verification',
-    desc: 'Every property undergoes thorough legal verification — title deed, encumbrance certificate, and mutation records checked.',
-    color: 'from-emerald-50 to-emerald-100',
-    iconBg: 'bg-emerald-100',
+    icon: Scale,
+    title: 'Legal Verification',
+    desc: 'Property documents are carefully reviewed, including title deeds, encumbrance records, and mutation details.',
   },
   {
-    icon: '💰',
-    title: 'Best Market Prices',
-    desc: 'We negotiate the best market rates for buyers and ensure sellers get fair value. No hidden charges.',
-    color: 'from-blue-50 to-blue-100',
-    iconBg: 'bg-blue-100',
+    icon: Banknote,
+    title: 'Fair Market Pricing',
+    desc: 'We help buyers find competitive opportunities while ensuring sellers receive fair market value.',
   },
   {
-    icon: '👨‍💼',
-    title: 'Experienced Team',
-    desc: '15+ years of local market expertise. Our team knows every locality, growth corridor, and price trend in Satna.',
-    color: 'from-purple-50 to-purple-100',
-    iconBg: 'bg-purple-100',
+    icon: Users,
+    title: 'Local Expertise',
+    desc: 'Deep knowledge of Satna and surrounding markets, localities, growth corridors, and property trends.',
   },
   {
-    icon: '🔍',
-    title: 'Transparent Transactions',
-    desc: 'Full transparency in every deal. We share all property documents, price history, and legal status upfront.',
-    color: 'from-amber-50 to-amber-100',
-    iconBg: 'bg-amber-100',
+    icon: SearchCheck,
+    title: 'Transparent Deals',
+    desc: 'Clear information about property details, documentation, pricing, and transaction requirements.',
   },
   {
-    icon: '🚗',
+    icon: MapPinned,
     title: 'Site Visit Assistance',
-    desc: 'Free site visit arranged for every serious buyer. We accompany you to verify the property on ground.',
-    color: 'from-teal-50 to-teal-100',
-    iconBg: 'bg-teal-100',
+    desc: 'We coordinate property visits and help you evaluate location, accessibility, surroundings, and suitability.',
   },
   {
-    icon: '📊',
+    icon: TrendingUp,
     title: 'Investment Guidance',
-    desc: 'Data-driven investment advice based on upcoming infrastructure, growth zones, and 5-year market projections.',
-    color: 'from-rose-50 to-rose-100',
-    iconBg: 'bg-rose-100',
+    desc: 'Practical insights based on location potential, infrastructure development, demand, and market trends.',
   },
   {
-    icon: '📄',
-    title: 'Fast Documentation',
-    desc: 'We complete all documentation — sale deed, registry, mutation — within the shortest possible time.',
-    color: 'from-indigo-50 to-indigo-100',
-    iconBg: 'bg-indigo-100',
+    icon: FileCheck2,
+    title: 'Documentation Support',
+    desc: 'Assistance throughout sale deed, registry, mutation, and other important documentation processes.',
   },
   {
-    icon: '🤝',
-    title: 'After Sale Support',
-    desc: 'Our relationship continues after the sale. We assist with mutation, property tax, and any post-purchase issues.',
-    color: 'from-orange-50 to-orange-100',
-    iconBg: 'bg-orange-100',
+    icon: Handshake,
+    title: 'After-Sale Support',
+    desc: 'Our assistance does not stop at the transaction. We remain available for post-sale requirements.',
   },
 ];
 
 const stats = [
-  { value: '500+', label: 'Properties Sold' },
-  { value: '15+', label: 'Years in Business' },
-  { value: '450+', label: 'Happy Clients' },
-  { value: '100%', label: 'Verified Properties' },
+  {
+    value: '500+',
+    label: 'Properties Sold',
+    icon: Building2,
+  },
+  {
+    value: '15+',
+    label: 'Years of Experience',
+    icon: BadgeCheck,
+  },
+  {
+    value: '450+',
+    label: 'Happy Clients',
+    icon: Users,
+  },
+  {
+    value: '100%',
+    label: 'Verified Listings',
+    icon: ShieldCheck,
+  },
 ];
 
 export default function WhyChooseUs() {
@@ -81,62 +97,207 @@ export default function WhyChooseUs() {
           }
         });
       },
-      { threshold: 0.1 }
+      {
+        threshold: 0.08,
+        rootMargin: '0px 0px -5% 0px',
+      }
     );
-    sectionRef?.current?.querySelectorAll('.animate-on-scroll')?.forEach((el) => observer?.observe(el));
-    return () => observer?.disconnect();
+
+    const elements =
+      sectionRef.current?.querySelectorAll('.animate-on-scroll');
+
+    elements?.forEach((element) => observer.observe(element));
+
+    return () => observer.disconnect();
   }, []);
 
   return (
-    <section ref={sectionRef} className="section-padding bg-background" id="why-us">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-12 animate-on-scroll animate-fade-up">
-          <span className="inline-flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full mb-3">
-            🌟 Why Choose Us
-          </span>
-          <h2 className="text-section-title font-extrabold text-foreground">
-            Satna&apos;s Most{' '}
-            <span className="text-gradient-emerald">Trusted Land Broker</span>
+    <section
+      ref={sectionRef}
+      id="why-us"
+      className="relative overflow-hidden bg-background py-20 sm:py-24 lg:py-28"
+    >
+      {/* ================================================== */}
+      {/* BACKGROUND */}
+      {/* ================================================== */}
+
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -left-48 top-20 h-[420px] w-[420px] rounded-full bg-primary/[0.035] blur-3xl" />
+
+        <div className="absolute -right-48 bottom-0 h-[420px] w-[420px] rounded-full bg-primary/[0.025] blur-3xl" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+        {/* ================================================== */}
+        {/* HEADER */}
+        {/* ================================================== */}
+
+        <div className="mx-auto mb-12 max-w-3xl text-center lg:mb-14">
+
+          <div className="animate-on-scroll animate-fade-up">
+            <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/10 bg-primary/[0.06] px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-primary">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              Why Choose Us
+            </span>
+          </div>
+
+          <h2 className="animate-on-scroll animate-fade-up text-section-title font-extrabold leading-[1.05] tracking-tight text-foreground">
+            A smarter way to{' '}
+            <span className="text-primary">
+              buy and sell land.
+            </span>
           </h2>
-          <p className="text-muted-foreground mt-3">
-            We go beyond just selling land — we build trust, ensure legality, and guide your investment journey.
+
+          <p className="animate-on-scroll animate-fade-up mx-auto mt-4 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
+            From property discovery to documentation and beyond, we combine
+            local market knowledge with a transparent, client-first approach.
           </p>
+
         </div>
 
-        {/* Stats Bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12 animate-on-scroll animate-fade-up">
-          {stats?.map((stat) => (
-            <div key={stat?.label} className="bg-primary rounded-2xl p-5 text-center text-white shadow-lg shadow-primary/25">
-              <div className="text-3xl font-extrabold">{stat?.value}</div>
-              <div className="text-primary-foreground/80 text-sm mt-1">{stat?.label}</div>
-            </div>
-          ))}
-        </div>
+        {/* ================================================== */}
+        {/* STATS */}
+        {/* ================================================== */}
 
-        {/* Features Grid */}
-        {/* 
-          BENTO AUDIT:
-          Array has 8 cards: [Legal, Price, Team, Transparent, SiteVisit, Investment, Docs, AfterSale]
-          Row 1: [col-1: Legal cs-1] [col-2: Price cs-1] [col-3: Team cs-1] [col-4: Transparent cs-1]
-          Row 2: [col-1: SiteVisit cs-1] [col-2: Investment cs-1] [col-3: Docs cs-1] [col-4: AfterSale cs-1]
-          Placed 8/8 cards ✓
-        */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {features?.map((feat, i) => (
-            <div
-              key={feat?.title}
-              className={`animate-on-scroll animate-fade-up group bg-gradient-to-br ${feat?.color} rounded-2xl p-6 border border-border/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1`}
-              style={{ animationDelay: `${i * 70}ms` }}
-            >
-              <div className={`w-12 h-12 ${feat?.iconBg} rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                {feat?.icon}
+        <div className="animate-on-scroll animate-fade-up mb-12 grid grid-cols-2 overflow-hidden rounded-[22px] border border-border/70 bg-card shadow-sm sm:grid-cols-4">
+
+          {stats.map((stat, index) => {
+            const Icon = stat.icon;
+
+            return (
+              <div
+                key={stat.label}
+                className={`relative flex flex-col items-center justify-center px-4 py-6 text-center sm:py-7 ${
+                  index !== stats.length - 1
+                    ? 'border-b border-border/70 sm:border-b-0 sm:border-r'
+                    : ''
+                } ${
+                  index === 1
+                    ? 'border-r sm:border-r'
+                    : ''
+                } ${
+                  index === 2
+                    ? 'sm:border-r'
+                    : ''
+                }`}
+              >
+                <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-full bg-primary/[0.07] text-primary">
+                  <Icon className="h-4 w-4" />
+                </div>
+
+                <div className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
+                  {stat.value}
+                </div>
+
+                <div className="mt-1 text-[11px] font-medium text-muted-foreground sm:text-xs">
+                  {stat.label}
+                </div>
               </div>
-              <h3 className="font-bold text-foreground text-sm mb-2">{feat?.title}</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">{feat?.desc}</p>
-            </div>
-          ))}
+            );
+          })}
+
         </div>
+
+        {/* ================================================== */}
+        {/* TRUST FEATURE GRID */}
+        {/* ================================================== */}
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
+          {features.map((feature, index) => {
+            const Icon = feature.icon;
+
+            return (
+              <div
+                key={feature.title}
+                className="animate-on-scroll animate-fade-up group relative rounded-[20px] border border-border/70 bg-card p-6 shadow-sm transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/20 hover:shadow-lg"
+                style={{
+                  animationDelay: `${index * 70}ms`,
+                }}
+              >
+
+                {/* Number */}
+                <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.15em] text-muted-foreground/30">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+
+                {/* Icon */}
+                <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl border border-primary/10 bg-primary/[0.06] text-primary transition-all duration-300 group-hover:bg-primary group-hover:text-white">
+                  <Icon className="h-5 w-5" />
+                </div>
+
+                {/* Content */}
+                <h3 className="text-[15px] font-bold tracking-tight text-foreground transition-colors duration-300 group-hover:text-primary">
+                  {feature.title}
+                </h3>
+
+                <p className="mt-2 text-xs leading-5 text-muted-foreground">
+                  {feature.desc}
+                </p>
+
+                {/* Bottom accent */}
+                <div className="absolute bottom-0 left-6 right-6 h-px origin-left scale-x-0 bg-primary/40 transition-transform duration-500 group-hover:scale-x-100" />
+
+              </div>
+            );
+          })}
+
+        </div>
+
+        {/* ================================================== */}
+        {/* TRUST STATEMENT */}
+        {/* ================================================== */}
+
+        <div className="animate-on-scroll animate-fade-up mt-10">
+
+          <div className="relative overflow-hidden rounded-[24px] border border-primary/10 bg-primary/[0.045] p-6 sm:p-8">
+
+            <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+
+              <div className="flex items-start gap-4">
+
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary text-white shadow-sm">
+                  <CheckCircle2 className="h-5 w-5" />
+                </div>
+
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-primary">
+                    Built on Trust
+                  </p>
+
+                  <h3 className="mt-1 text-lg font-bold tracking-tight text-foreground">
+                    Your property decision deserves complete clarity.
+                  </h3>
+
+                  <p className="mt-1.5 max-w-2xl text-sm leading-6 text-muted-foreground">
+                    We believe a successful property transaction starts with
+                    honest information, proper documentation, and the right
+                    guidance.
+                  </p>
+                </div>
+
+              </div>
+
+              <a
+                href={`https://wa.me/918462097970?text=${encodeURIComponent(
+                  'Hello Jitendra Roy Land Brokers, I would like to discuss a property.'
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg"
+              >
+                Talk to an Expert
+
+                <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </a>
+
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
     </section>
   );
