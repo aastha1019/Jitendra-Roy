@@ -12,6 +12,7 @@ import {
   Droplets,
   FileCheck2,
   Home,
+  Heart,
   MapPin,
   Phone,
   Ruler,
@@ -21,6 +22,7 @@ import {
   Trees,
   X,
 } from 'lucide-react';
+import { getWishlist, isInWishlist, toggleWishlist } from '@/lib/wishlist';
 
 const allProperties = [
   {
@@ -203,8 +205,24 @@ export default function PropertiesGrid() {
   const [sortBy, setSortBy] = useState('default');
   const [waterFilter, setWaterFilter] = useState(false);
   const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const [wishlistIds, setWishlistIds] = useState<number[]>([]);
 
   const sectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const updateWishlist = () => {
+      setWishlistIds(getWishlist().map((property) => property.id));
+    };
+
+    updateWishlist();
+    window.addEventListener('wishlistchange', updateWishlist);
+    return () => window.removeEventListener('wishlistchange', updateWishlist);
+  }, []);
+
+  const handleWishlistToggle = (property: (typeof allProperties)[number]) => {
+    const next = toggleWishlist(property);
+    setWishlistIds(next.map((item) => item.id));
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -617,6 +635,18 @@ export default function PropertiesGrid() {
                         {property.category}
                       </span>
                     </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleWishlistToggle(property)}
+                      aria-label={`${isInWishlist(property.id) ? 'Remove' : 'Save'} ${property.name}`}
+                      className={`absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-xl border border-white/20 bg-black/35 text-white backdrop-blur-sm transition-colors hover:bg-white hover:text-primary ${wishlistIds.includes(property.id) ? 'bg-[#C59B27] text-white' : ''}`}
+                    >
+                      <Heart
+                        className="h-4 w-4"
+                        fill={wishlistIds.includes(property.id) ? 'currentColor' : 'none'}
+                      />
+                    </button>
 
                     {/* Featured */}
                     {/* {property.featured && (
