@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 import {
   Menu,
@@ -9,8 +10,13 @@ import {
   Phone,
   MessageCircle,
   ArrowUpRight,
+  Heart,
+  Moon,
+  Sun,
+  UserRound,
 } from 'lucide-react';
 import Image from 'next/image';
+import { getWishlist } from '@/lib/wishlist';
 const navItems = [
   {
     label: 'Home',
@@ -22,25 +28,57 @@ const navItems = [
   },
   {
     label: 'Services',
-    href: '#services',
+    href: '/#services',
   },
   {
     label: 'Why Us',
-    href: '#why-us',
+    href: '/#why-us',
   },
   {
     label: 'About',
-    href: '#about',
+    href: '/#about',
   },
   {
     label: 'Contact',
-    href: '#contact',
+    href: '/#contact',
   },
 ];
 
 export default function Header() {
+  const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [wishlistCount, setWishlistCount] = useState(0);
+  const [activeHash, setActiveHash] = useState('');
+
+  useEffect(() => {
+    const savedTheme = window.localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const darkMode = savedTheme ? savedTheme === 'dark' : prefersDark;
+
+    setIsDarkMode(darkMode);
+    document.documentElement.classList.toggle('dark', darkMode);
+
+    setWishlistCount(getWishlist().length);
+
+    const updateWishlistCount = () => setWishlistCount(getWishlist().length);
+    window.addEventListener('wishlistchange', updateWishlistCount);
+    window.addEventListener('storage', updateWishlistCount);
+
+    return () => {
+      window.removeEventListener('wishlistchange', updateWishlistCount);
+      window.removeEventListener('storage', updateWishlistCount);
+    };
+  }, []);
+
+  useEffect(() => {
+    const updateHash = () => setActiveHash(window.location.hash);
+
+    updateHash();
+    window.addEventListener('hashchange', updateHash);
+    return () => window.removeEventListener('hashchange', updateHash);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -64,6 +102,31 @@ export default function Header() {
     };
   }, [isMenuOpen]);
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsMenuOpen(false);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const toggleDarkMode = () => {
+    const nextDarkMode = !isDarkMode;
+
+    setIsDarkMode(nextDarkMode);
+    document.documentElement.classList.toggle('dark', nextDarkMode);
+    window.localStorage.setItem('theme', nextDarkMode ? 'dark' : 'light');
+  };
+
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/';
+    if (href.startsWith('/#')) {
+      return pathname === '/' && activeHash === href.slice(1);
+    }
+    return pathname.startsWith(href);
+  };
+
   const closeMenu = () => {
     setIsMenuOpen(false);
   };
@@ -83,6 +146,8 @@ export default function Header() {
           border-b
           transition-all
           duration-300
+          dark:border-white/10
+          dark:bg-[#022C22]
           ${
             isScrolled
               ? 'border-[#E5E7EB] bg-white/95 shadow-[0_4px_20px_rgba(17,24,39,0.06)] backdrop-blur-md'
@@ -95,12 +160,12 @@ export default function Header() {
             mx-auto
             flex
             h-[72px]
-            max-w-[1240px]
+            max-w-7xl
             items-center
             justify-between
-            px-5
-            sm:px-8
-            lg:px-6
+            px-4
+            sm:px-6
+            lg:px-8
           "
         >
 
@@ -148,11 +213,15 @@ export default function Header() {
             "
             aria-label="Main navigation"
           >
-            {navItems.map((item) => (
+            {navItems.map((item) => {
+              const active = isActive(item.href);
+
+              return (
               <Link
                 key={item.label}
                 href={item.href}
-                className="
+                onClick={closeMenu}
+                className={`
                   group
                   relative
                   py-2
@@ -162,25 +231,28 @@ export default function Header() {
                   transition-colors
                   duration-200
                   hover:text-[#064E3B]
-                "
+                  dark:text-gray-300
+                  dark:hover:text-white
+                `}
               >
                 {item.label}
 
                 <span
-                  className="
+                  className={`
                     absolute
                     bottom-0
                     left-0
                     h-px
-                    w-0
+                    ${active ? 'w-full' : 'w-0'}
                     bg-[#C59B27]
                     transition-all
                     duration-200
                     group-hover:w-full
-                  "
+                  `}
                 />
               </Link>
-            ))}
+              );
+            })}
           </nav>
 
           {/* =================================================
@@ -188,6 +260,35 @@ export default function Header() {
           ================================================== */}
 
           <div className="hidden items-center gap-2 lg:flex">
+
+            <Link
+              href="/wishlist"
+              aria-label={`Saved properties (${wishlistCount})`}
+              className="relative inline-flex h-10 w-10 items-center justify-center rounded-[7px] border border-[#E5E7EB] text-[#374151] transition-colors hover:border-[#064E3B]/25 hover:text-[#064E3B] dark:border-white/15 dark:text-gray-200 dark:hover:border-white/30 dark:hover:text-white"
+            >
+              <Heart size={16} strokeWidth={1.8} />
+              <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#C59B27] px-1 text-[9px] font-bold text-white">
+                {wishlistCount}
+              </span>
+            </Link>
+
+            <button
+              type="button"
+              onClick={toggleDarkMode}
+              aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-[7px] border border-[#E5E7EB] text-[#374151] transition-colors hover:border-[#064E3B]/25 hover:text-[#064E3B] dark:border-white/15 dark:text-gray-200 dark:hover:border-white/30 dark:hover:text-white"
+            >
+              {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+
+            <button
+              type="button"
+              aria-label="Open account"
+              className="inline-flex items-center gap-1.5 rounded-[7px] border border-[#E5E7EB] bg-white px-3 py-2.5 text-[11px] font-semibold text-[#374151] transition-colors hover:border-[#064E3B]/25 hover:text-[#064E3B] dark:border-white/15 dark:bg-transparent dark:text-gray-200 dark:hover:border-white/30 dark:hover:text-white"
+            >
+              <UserRound size={14} />
+              Account
+            </button>
 
             {/* Phone */}
             <a
@@ -253,6 +354,28 @@ export default function Header() {
               MOBILE MENU BUTTON
           ================================================== */}
 
+          <div className="flex items-center gap-2 lg:hidden">
+            <Link
+              href="/wishlist"
+              onClick={closeMenu}
+              aria-label={`Saved properties (${wishlistCount})`}
+              className="relative inline-flex h-9 w-9 items-center justify-center rounded-[7px] border border-[#E5E7EB] text-[#374151] dark:border-white/15 dark:text-gray-200"
+            >
+              <Heart size={16} />
+              <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#C59B27] px-1 text-[9px] font-bold text-white">
+                {wishlistCount}
+              </span>
+            </Link>
+
+            <button
+              type="button"
+              onClick={toggleDarkMode}
+              aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-[7px] border border-[#E5E7EB] text-[#374151] dark:border-white/15 dark:text-gray-200"
+            >
+              {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+
           <button
             type="button"
             onClick={() => setIsMenuOpen((prev) => !prev)}
@@ -279,6 +402,7 @@ export default function Header() {
               <Menu size={19} strokeWidth={1.8} />
             )}
           </button>
+          </div>
 
         </div>
       </header>
@@ -296,6 +420,7 @@ export default function Header() {
           transition-opacity
           duration-300
           lg:hidden
+          dark:bg-[#022C22]/40
           ${
             isMenuOpen
               ? 'pointer-events-auto opacity-100'
@@ -324,6 +449,8 @@ export default function Header() {
           transition-all
           duration-300
           lg:hidden
+          dark:border-white/10
+          dark:bg-[#022C22]
           ${
             isMenuOpen
               ? 'translate-y-0 opacity-100'
@@ -343,12 +470,15 @@ export default function Header() {
         >
           <div className="divide-y divide-[#F0F1F2]">
 
-            {navItems.map((item) => (
+            {navItems.map((item) => {
+              const active = isActive(item.href);
+
+              return (
               <Link
                 key={item.label}
                 href={item.href}
                 onClick={closeMenu}
-                className="
+                className={`
                   flex
                   items-center
                   justify-between
@@ -358,7 +488,11 @@ export default function Header() {
                   text-[#374151]
                   transition-colors
                   hover:text-[#064E3B]
-                "
+                  ${active ? 'bg-[#F4F6F4] text-[#064E3B]' : ''}
+                  dark:text-gray-200
+                  dark:hover:text-white
+                  ${active ? 'dark:bg-white/10 dark:text-white' : ''}
+                `}
               >
                 <span>{item.label}</span>
 
@@ -368,7 +502,8 @@ export default function Header() {
                   className="text-[#9CA3AF]"
                 />
               </Link>
-            ))}
+              );
+            })}
 
           </div>
 
