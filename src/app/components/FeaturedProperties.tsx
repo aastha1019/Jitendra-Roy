@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
   ArrowUpRight,
   Building2,
   CheckCircle2,
+  Heart,
   MapPin,
   Maximize2,
   MessageCircle,
@@ -14,6 +15,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import AppImage from '@/components/ui/AppImage';
+import { getWishlist, toggleWishlist } from '@/lib/wishlist';
 
 const properties = [
   {
@@ -103,6 +105,22 @@ const categoryStyles: Record<string, string> = {
 
 export default function FeaturedProperties() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const [wishlistIds, setWishlistIds] = useState<number[]>([]);
+
+  useEffect(() => {
+    const updateWishlist = () => {
+      setWishlistIds(getWishlist().map((property) => property.id));
+    };
+
+    updateWishlist();
+    window.addEventListener('wishlistchange', updateWishlist);
+    return () => window.removeEventListener('wishlistchange', updateWishlist);
+  }, []);
+
+  const handleWishlistToggle = (property: (typeof properties)[number]) => {
+    const next = toggleWishlist(property);
+    setWishlistIds(next.map((item) => item.id));
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -261,6 +279,18 @@ export default function FeaturedProperties() {
                 <div className="absolute bottom-4 right-4 flex h-9 w-9 items-center justify-center rounded-xl border border-white/20 bg-black/35 text-white opacity-0 backdrop-blur-md transition-all duration-300 group-hover:opacity-100">
                   <Maximize2 className="h-4 w-4" />
                 </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleWishlistToggle(property)}
+                  aria-label={`${wishlistIds.includes(property.id) ? 'Remove' : 'Save'} ${property.name}`}
+                  className={`absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-xl border border-white/20 bg-black/35 text-white backdrop-blur-md transition-colors hover:bg-white hover:text-primary ${wishlistIds.includes(property.id) ? 'bg-[#C59B27]' : ''}`}
+                >
+                  <Heart
+                    className="h-4 w-4"
+                    fill={wishlistIds.includes(property.id) ? 'currentColor' : 'none'}
+                  />
+                </button>
               </div>
 
               {/* Content */}
