@@ -17,8 +17,8 @@ export default function HomePage() {
       <Header />
       <HeroSection />
       <FeaturedProperties />
-      <ServicesSection />
       <WhyChooseUs />
+      <ServicesSection />
       <AboutSection />
       <TestimonialsSection />
       <InvestmentCalculator />

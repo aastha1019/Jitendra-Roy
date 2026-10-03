@@ -31,8 +31,8 @@ const navItems = [
     href: '/#services',
   },
   {
-    label: 'Why Us',
-    href: '/#why-us',
+    label: 'Our Expertise',
+    href: '/#our-expertise',
   },
   {
     label: 'About',
@@ -120,10 +120,14 @@ export default function Header() {
   };
 
   const isActive = (href: string) => {
-    if (href === '/') return pathname === '/';
+    if (href === '/') {
+      return pathname === '/' && activeHash === '';
+    }
+
     if (href.startsWith('/#')) {
       return pathname === '/' && activeHash === href.slice(1);
     }
+
     return pathname.startsWith(href);
   };
 
@@ -168,36 +172,38 @@ export default function Header() {
             lg:px-8
           "
         >
-
           {/* =================================================
               LOGO
           ================================================== */}
 
-        {/* =================================================
-    LOGO
-================================================== */}
-
-<Link
-  href="/"
-  onClick={closeMenu}
-  className="group flex shrink-0 items-center"
-  aria-label="Jitendra Roy Land Brokers"
->
-  <Image
-    src="/assets/images/logo.png"
-    alt="Jitendra Roy Land Brokers"
-    width={190}
-    height={70}
-    priority
-    className="
-      h-auto
-      w-[155px]
-      object-contain
-      sm:w-[125px]
-      lg:w-[115px]
-    "
-  />
-</Link>
+          <Link
+            href="/"
+            onClick={closeMenu}
+            className="group flex shrink-0 items-center
+            dark:rounded-[8px]
+          dark:bg-white
+            dark:px-3
+            dark:py-1.5
+            dark:shadow-[0_2px_10px_rgba(0,0,0,0.15)]
+            transition-all duration-200
+            "
+            aria-label="Jitendra Roy Land Brokers"
+          >
+            <Image
+              src="/assets/images/appLogo-hr.png"
+              alt="Jitendra Roy Land Brokers"
+              width={180}
+              height={45}
+              priority
+              className="
+                h-auto
+                w-[150px]
+                object-contain
+                sm:w-[150px]
+                lg:w-[180px]
+              "
+            />
+          </Link>
 
           {/* =================================================
               DESKTOP NAVIGATION
@@ -217,40 +223,54 @@ export default function Header() {
               const active = isActive(item.href);
 
               return (
-              <Link
-                key={item.label}
-                href={item.href}
-                onClick={closeMenu}
-                className={`
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  onClick={() => {
+                    closeMenu();
+
+                    if (item.href === '/') {
+                      window.history.replaceState(null, '', '/');
+                      setActiveHash('');
+                      window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth',
+                      });
+                    }
+                  }}
+                  className={`
                   group
                   relative
                   py-2
                   text-[12px]
-                  font-medium
-                  text-[#4B5563]
-                  transition-colors
+                  text-[#000000]
+                  transition-all
                   duration-200
+                  font-bold
                   hover:text-[#064E3B]
                   dark:text-gray-300
                   dark:hover:text-white
+                  ${active
+                    ? 'text-[14px] font-bold text-[#064E3B]'
+                    : 'text-[12px] font-medium text-[#4B5563] hover:text-[#064E3B]'
+                  }
                 `}
-              >
-                {item.label}
+                >
+                  {item.label}
 
-                <span
-                  className={`
+                  <span
+                    className={`
                     absolute
                     bottom-0
                     left-0
-                    h-px
-                    ${active ? 'w-full' : 'w-0'}
+                    h-[2px]
+                    ${active ? 'w-full' : 'w-0 group-hover:w-full'}
                     bg-[#C59B27]
                     transition-all
                     duration-200
-                    group-hover:w-full
                   `}
-                />
-              </Link>
+                  />
+                </Link>
               );
             })}
           </nav>
@@ -260,7 +280,6 @@ export default function Header() {
           ================================================== */}
 
           <div className="hidden items-center gap-2 lg:flex">
-
             <Link
               href="/wishlist"
               aria-label={`Saved properties (${wishlistCount})`}
@@ -311,12 +330,7 @@ export default function Header() {
                 hover:text-[#064E3B]
               "
             >
-              <Phone
-                size={13}
-                strokeWidth={1.8}
-                className="text-[#0F766E]"
-              />
-
+              <Phone size={13} strokeWidth={1.8} className="text-[#0F766E]" />
               Call
             </a>
 
@@ -340,14 +354,9 @@ export default function Header() {
                 hover:bg-[#053F30]
               "
             >
-              <MessageCircle
-                size={14}
-                strokeWidth={1.8}
-              />
-
+              <MessageCircle size={14} strokeWidth={1.8} />
               WhatsApp
             </a>
-
           </div>
 
           {/* =================================================
@@ -376,12 +385,12 @@ export default function Header() {
               {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
             </button>
 
-          <button
-            type="button"
-            onClick={() => setIsMenuOpen((prev) => !prev)}
-            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={isMenuOpen}
-            className="
+            <button
+              type="button"
+              onClick={() => setIsMenuOpen((prev) => !prev)}
+              aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={isMenuOpen}
+              className="
               flex
               h-9
               w-9
@@ -395,15 +404,14 @@ export default function Header() {
               hover:bg-[#F4F6F4]
               lg:hidden
             "
-          >
-            {isMenuOpen ? (
-              <X size={19} strokeWidth={1.8} />
-            ) : (
-              <Menu size={19} strokeWidth={1.8} />
-            )}
-          </button>
+            >
+              {isMenuOpen ? (
+                <X size={19} strokeWidth={1.8} />
+              ) : (
+                <Menu size={19} strokeWidth={1.8} />
+              )}
+            </button>
           </div>
-
         </div>
       </header>
 
@@ -421,11 +429,7 @@ export default function Header() {
           duration-300
           lg:hidden
           dark:bg-[#022C22]/40
-          ${
-            isMenuOpen
-              ? 'pointer-events-auto opacity-100'
-              : 'pointer-events-none opacity-0'
-          }
+          ${isMenuOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}
         `}
         onClick={closeMenu}
         aria-hidden="true"
@@ -469,16 +473,15 @@ export default function Header() {
           aria-label="Mobile navigation"
         >
           <div className="divide-y divide-[#F0F1F2]">
-
             {navItems.map((item) => {
               const active = isActive(item.href);
 
               return (
-              <Link
-                key={item.label}
-                href={item.href}
-                onClick={closeMenu}
-                className={`
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  onClick={closeMenu}
+                  className={`
                   flex
                   items-center
                   justify-between
@@ -493,18 +496,13 @@ export default function Header() {
                   dark:hover:text-white
                   ${active ? 'dark:bg-white/10 dark:text-white' : ''}
                 `}
-              >
-                <span>{item.label}</span>
+                >
+                  <span>{item.label}</span>
 
-                <ArrowUpRight
-                  size={15}
-                  strokeWidth={1.6}
-                  className="text-[#9CA3AF]"
-                />
-              </Link>
+                  <ArrowUpRight size={15} strokeWidth={1.6} className="text-[#9CA3AF]" />
+                </Link>
               );
             })}
-
           </div>
 
           {/* Mobile actions */}
@@ -535,11 +533,7 @@ export default function Header() {
                 text-[#374151]
               "
             >
-              <Phone
-                size={15}
-                strokeWidth={1.8}
-              />
-
+              <Phone size={15} strokeWidth={1.8} />
               Call Us
             </a>
 
@@ -561,15 +555,10 @@ export default function Header() {
                 text-white
               "
             >
-              <MessageCircle
-                size={15}
-                strokeWidth={1.8}
-              />
-
+              <MessageCircle size={15} strokeWidth={1.8} />
               WhatsApp
             </a>
           </div>
-
         </nav>
       </div>
     </>
