@@ -267,7 +267,7 @@ export default function ContactSection() {
                     </span>
 
                     <span className="mt-1 block text-sm font-medium">
-                      +91 99999 99999
+                      +91 9301576694
                     </span>
                   </span>
                 </a>
@@ -286,7 +286,7 @@ export default function ContactSection() {
                     </span>
 
                     <span className="mt-1 block truncate text-sm font-medium">
-                      info@jitendraroylandbrokers.com
+                      jitendraroy01071979@gmail.com
                     </span>
                   </span>
                 </a>
